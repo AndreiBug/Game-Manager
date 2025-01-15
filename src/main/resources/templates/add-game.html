@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .suggestion-list {
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<div class="container centered-container">
+    <div class="text-center w-50">
+        <h2>Search Game</h2>
+        <form th:action="@{/search}" method="get" class="position-relative">
+            <div class="form-group position-relative">
+                <input id="search-bar" type="text" name="name" class="form-control" placeholder="Enter game name" autocomplete="off" required>
+                <div id="suggestion-box" class="suggestion-list"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div th:if="${gameStored != null}" class="mt-4">
+            <h3>Game Found:</h3>
+            <p><strong>Name:</strong> <span th:text="${gameStored.name}"></span></p>
+            <p><strong>Company:</strong> <span th:text="${gameStored.company}"></span></p>
+            <p><strong>Release Date:</strong> <span th:text="${gameStored.date}"></span></p>
+            <p><strong>Rating:</strong> <span th:text="${gameStored.rating}"></span></p>
+            <form th:action="@{/addstoredgame}" method="post">
+                <input type="hidden" name="name" th:value="${gameStored.name}">
+                <button type="submit" class="btn btn-success">Add to Games</button>
+            </form>
+        </div>
+
+        <div th:if="${error != null}" class="mt-4">
+            <p class="text-danger" th:text="${error}"></p>
+        </div>
+
+        <div class="mt-3">
+            <a th:href="@{/index}" class="btn btn-secondary">Back to Games List</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#search-bar').on('input', function () {
+            const query = $(this).val();
+            if (query.length > 1) {
+                $.ajax({
+                    url: '/search/suggestions',
+                    method: 'GET',
+                    data: { query: query },
+                    success: function (data) {
+                        let suggestions = '';
+                        data.forEach(function (item) {
+                            suggestions += `<div class="suggestion-item">${item}</div>`;
+                        });
+                        $('#suggestion-box').html(suggestions).show();
+                    },
+                    error: function () {
+                        $('#suggestion-box').hide();
+                    }
+                });
+            } else {
+                $('#suggestion-box').hide();
+            }
+        });
+
+        // Select a suggestion
+        $(document).on('click', '.suggestion-item', function () {
+            $('#search-bar').val($(this).text());
+            $('#suggestion-box').hide();
+        });
+
+        // Hide the suggestion box when clicking outside
+        $(document).click(function (e) {
+            if (!$(e.target).closest('#search-bar, #suggestion-box').length) {
+                $('#suggestion-box').hide();
+            }
+        });
+    });
+</script>
+</body>
+</html>

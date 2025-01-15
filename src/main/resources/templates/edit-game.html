@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Game</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Edit Game</h2>
+  <div class="card">
+    <div class="card-body">
+      <form th:action="@{/game/update/{id}(id=${game.id})}" th:object="${game}" method="post">
+
+        <div class="form-group">
+          <label for="personalRating">Personal Rating</label>
+          <input type="number" id="personalRating" class="form-control" th:field="*{personalRating}"
+                 step="1" min="0" max="10" placeholder="Enter your rating">
+        </div>
+
+        <div class="form-group">
+          <label for="progress">Progress</label>
+          <select id="progress" class="form-control" th:field="*{progress}">
+            <option value="PLAYING" th:selected="${game.progress == 'PLAYING'}">Playing</option>
+            <option value="COMPLETED" th:selected="${game.progress == 'COMPLETED'}">Completed</option>
+            <option value="PLAN_TO_PLAY" th:selected="${game.progress == 'PLAN_TO_PLAY'}">Plan to Play</option>
+          </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-success btn-block">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="text-center mt-3">
+    <a th:href="@{/index}" class="btn btn-secondary">Back to Game List</a>
+  </div>
+</div>
+
+</body>
+</html>
