@@ -84,10 +84,3 @@ If the database resets unexpectedly, ensure:
 
 ### Permissions
 Verify that the application has read/write permissions for the database file location.
-
-## Contributing
-Contributions are welcome! Please follow these steps:
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Commit your changes and push the branch.
-4. Submit a pull request.
