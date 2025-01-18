@@ -1,4 +1,4 @@
-# Project Name
+# Game Manager
 
 ## Description
 This project is a Spring Boot application using an H2 database for managing data. The application is designed to demonstrate the configuration and persistence of data in an embedded database while enabling user-friendly access and schema management through Hibernate.
